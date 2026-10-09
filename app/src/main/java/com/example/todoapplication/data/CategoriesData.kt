@@ -9,17 +9,17 @@ data class categoryItem(val id:Int, val type : String , val color: Color)
     val categoriesItemData = listOf(
         categoryItem(
             1,
-            "Urgent",
+            "OPEN",
             Color.Red
         ),
         categoryItem(
             2,
-            "Important",
+            "IN_PROGRESS",
             Color.Green
         ),
         categoryItem(
             3,
-            "Upcoming",
+            "DONE",
             Color.Blue
         )
     )
