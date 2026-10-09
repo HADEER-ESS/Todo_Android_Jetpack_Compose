@@ -12,20 +12,19 @@ import com.example.todoapplication.ViewModel.TaskViewModel
 
 @Composable
 fun MainScreenContent(
-    userTasksViewModel : TaskViewModel = viewModel()
+    userTasksViewModel : TaskViewModel = viewModel(factory = TaskViewModel.Factory)
 ){
     println("TASK ${userTasksViewModel.userTasks.collectAsState()}")
-    var data = userTasksViewModel.userTasks.collectAsState().value
+    val data = userTasksViewModel.taskList.collectAsState().value
     Column {
         MainAppTitle()
-        if (data.size !== 0){
-                    LazyColumn {
-            items(data){
-                task -> TaskItem(task)
+        if (!data.isEmpty()){
+            LazyColumn {
+                items(data){
+                    task -> TaskItem(task)
+                }
             }
         }
-        }
-
     }
 
 }
