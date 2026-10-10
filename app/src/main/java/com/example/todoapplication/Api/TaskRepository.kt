@@ -1,6 +1,7 @@
 package com.example.todoapplication.Api
 
 import com.example.todoapplication.data.request.CreateTask
+import com.example.todoapplication.data.request.UpdateTaskStatusRequest
 import com.example.todoapplication.data.response.TaskItem
 import com.example.todoapplication.data.response.TaskStatus
 import retrofit2.Response
@@ -20,8 +21,10 @@ class TaskRepository {
         return api.createTask("Bearer $token",  body)
     }
 
-    suspend fun updateTaskStatus(token: String,id: String, status: TaskStatus): Response<TaskItem>{
-        return api.updateTaskStatus("Bearer $token",id, status)
+    suspend fun updateTaskStatus(token: String, id: String, status: TaskStatus): Response<TaskItem>{
+        // Postman shows x-www-form-urlencoded, so we pass the enum name (e.g., "DONE") 
+        // as a simple string field "status".
+        return api.updateTaskStatus("Bearer $token", id, UpdateTaskStatusRequest(status))
     }
 
     suspend fun deleteTask(token: String,id: String): Response<Void>{

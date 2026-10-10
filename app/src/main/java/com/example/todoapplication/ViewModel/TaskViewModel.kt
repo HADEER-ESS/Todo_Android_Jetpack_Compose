@@ -1,7 +1,9 @@
 package com.example.todoapplication.ViewModel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -10,6 +12,7 @@ import com.example.todoapplication.data.categoryItem
 import com.example.todoapplication.data.request.CreateTask
 import com.example.todoapplication.data.response.TaskItem
 import com.example.todoapplication.data.response.TaskStatus
+import com.example.todoapplication.data.store.UserStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,11 +28,13 @@ data class TaskState(
 
 class TaskViewModel(
     private val repository: TaskRepository,
+    private val userStore: UserStore
 ): ViewModel() {
     // Mutable State Flow to hold the user tasks as a list
     //(Mutable State Flow) >> To be modified inside ViewModel class itself
     private var _userTasks = MutableStateFlow<List<TaskState>>(emptyList())
     private var _taskList = MutableStateFlow<List<TaskItem>>(emptyList())
+    
 
    //(State Flow) >> To be read by other application UI class without making any modifications on it (read only)
     val userTasks : StateFlow<List<TaskState>> = _userTasks.asStateFlow()
@@ -39,18 +44,11 @@ class TaskViewModel(
 
     //Create Helper function to update ot add tasks in _userTasks Mutable State Flow
     fun addToTask(token: String, item : TaskState ){
-
         println("Print $item")
-//        if(item.title == 0){
-//            Toast.makeText(context , "Please select task category" , Toast.LENGTH_LONG)
-//        }
-
         // Get the current list of tasks
         val currentTask = _userTasks.value.toMutableList()
-
         // Add the new task to the list
         currentTask.add(item)
-
         // Update _userTasks with the new list of tasks
         _userTasks.value = currentTask
     }
@@ -60,9 +58,18 @@ class TaskViewModel(
         viewModelScope.launch{
             try {
                 val res = repository.createTask(token, body = item)
-                println("Task created successfully $res")
+                if (res.isSuccessful) {
+                    println("Task created successfully: ${res.body()}")
+                    getAllTasks(token)
+                } else {
+                    println("Task creation failed: ${res.code()} ${res.message()}")
+                    if (res.code() == 401) {
+                        println("User is not authorized - clearing token")
+                        userStore.clearToken()
+                    }
+                }
             }catch (err: Exception){
-                println("Error in creating task $err",)
+                println("Error in creating task $err")
             }
         }
     }
@@ -71,8 +78,10 @@ class TaskViewModel(
         viewModelScope.launch {
             try {
                 val res = repository.updateTaskStatus(token, id, status)
-                _taskList.value.find{ res.body()?.id == it.id}?.let {
-                    it.status = status
+                if (res.isSuccessful) {
+                    getAllTasks(token)
+                } else if (res.code() == 401) {
+                    userStore.clearToken()
                 }
             }catch (err: Exception){
                 println("Error in Update task status $err")
@@ -84,7 +93,11 @@ class TaskViewModel(
         viewModelScope.launch {
             try {
                 val res = repository.getTasks(token)
-                _taskList.value = res.body()!!.toMutableList()
+                if (res.isSuccessful) {
+                    _taskList.value = res.body()?.toMutableList() ?: mutableListOf()
+                } else if (res.code() == 401) {
+                    userStore.clearToken()
+                }
             }catch (err: Exception){
                 println("Error in Getting task List $err")
             }
@@ -97,6 +110,8 @@ class TaskViewModel(
                 val res = repository.deleteTask(token, id)
                 if(res.isSuccessful){
                     getAllTasks(token)
+                } else if (res.code() == 401) {
+                    userStore.clearToken()
                 }
             }catch (err: Exception){
                 println("Error in Delete task $err")
@@ -108,8 +123,11 @@ class TaskViewModel(
         viewModelScope.launch {
             try {
                 val res = repository.getTaskById(token, id)
-                taskViewData = res.body()
-
+                if (res.isSuccessful) {
+                    taskViewData = res.body()
+                } else if (res.code() == 401) {
+                    userStore.clearToken()
+                }
             }catch (err: Exception){
                 println("Error in Getting task by id $err")
             }
@@ -119,7 +137,11 @@ class TaskViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                TaskViewModel(repository = TaskRepository())
+                val application = this[APPLICATION_KEY] as Application
+                TaskViewModel(
+                    repository = TaskRepository(),
+                    userStore = UserStore(application)
+                )
             }
         }
     }
