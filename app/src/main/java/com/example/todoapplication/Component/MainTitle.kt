@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,33 +31,39 @@ import com.example.todoapplication.ViewModel.TaskViewModel
 import com.example.todoapplication.data.request.CreateTask
 
 @Composable
-fun MainAppTitle() {
+fun MainAppTitle(token: String) {
     var openModel by remember { mutableStateOf(false) }
 
     Row(
-        verticalAlignment = Alignment.Top,
+        // Use CenterVertically for better alignment
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 16.dp)
+            .statusBarsPadding() // This prevents the Status Bar from overlapping the button
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(text = "Welcome Back")
         Button(
-            onClick = { openModel = true },
+            onClick = {
+                println("Create Task button clicked")
+                openModel = true // Uncommented this line
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF194FF)),
-            shape = RoundedCornerShape(16),
+            shape = RoundedCornerShape(16.dp), // Added .dp for consistent rounding
         ) {
-            Text(text = "Create Task")
+            Text(text = "Create Task+")
         }
         
         if (openModel) {
-            OpenDialogForm(onDismiss = { openModel = false })
+            OpenDialogForm(token, onDismiss = { openModel = false })
         }
     }
 }
 
 @Composable
 fun OpenDialogForm(
+    token: String,
     onDismiss: () -> Unit,
     userTaskViewModel: TaskViewModel = viewModel(factory = TaskViewModel.Factory),
 ) {
@@ -108,7 +115,7 @@ fun OpenDialogForm(
                     Button(
                         onClick = {
                             if (title.isNotBlank()) {
-                                userTaskViewModel.createNewTask(CreateTask(title, description))
+                                userTaskViewModel.createNewTask(token, CreateTask(title, description))
                                 onDismiss()
                             }
                         },
@@ -125,5 +132,5 @@ fun OpenDialogForm(
 @Composable
 @Preview(showBackground = true)
 fun MainTitlePreview() {
-    MainAppTitle()
+    MainAppTitle(token = "sdasdasd")
 }

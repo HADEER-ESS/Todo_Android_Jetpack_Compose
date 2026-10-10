@@ -1,12 +1,10 @@
 package com.example.todoapplication.MainScreen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.Component.MainAppTitle
@@ -27,10 +25,12 @@ fun MainScreenContent(
             LoginScreen()
         }
         else {
-            MainAppTitle()
-            LazyColumn {
-                items(data){
-                    task -> TaskItem(task)
+            Column {
+                MainAppTitle(token)
+                LazyColumn {
+                    items(data){
+                        task -> TaskItem(task)
+                    }
                 }
             }
         }
