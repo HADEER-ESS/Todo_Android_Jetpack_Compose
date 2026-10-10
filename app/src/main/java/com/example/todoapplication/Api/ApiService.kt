@@ -2,6 +2,7 @@ package com.example.todoapplication.Api
 
 import com.example.todoapplication.data.request.CreateTask
 import com.example.todoapplication.data.request.CreateUser
+import com.example.todoapplication.data.response.LoginResponse
 import com.example.todoapplication.data.response.TaskItem
 import com.example.todoapplication.data.response.TaskStatus
 import retrofit2.Response
@@ -41,5 +42,5 @@ interface ApiService {
     ): Response<Void>
 
     @POST("auth/signin")
-    suspend fun login(@Body() body: CreateUser): Response<String>
+    suspend fun login(@Body() body: CreateUser): Response<LoginResponse>
 }
