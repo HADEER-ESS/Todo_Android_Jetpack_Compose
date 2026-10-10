@@ -2,6 +2,7 @@ package com.example.todoapplication.Api
 
 import com.example.todoapplication.data.request.CreateTask
 import com.example.todoapplication.data.request.CreateUser
+import com.example.todoapplication.data.request.UpdateTaskStatusRequest
 import com.example.todoapplication.data.response.LoginResponse
 import com.example.todoapplication.data.response.TaskItem
 import com.example.todoapplication.data.response.TaskStatus
@@ -14,6 +15,10 @@ import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
+
+data class UpdateTaskStatusRequest(
+    val status: TaskStatus
+)
 interface ApiService {
     @GET("tasks")
     suspend fun getTasks(@Header("Authorization") token: String) : Response<List<TaskItem>>
@@ -27,7 +32,7 @@ interface ApiService {
     suspend fun updateTaskStatus(
         @Header("Authorization") token: String,
         @Path("id") id: String,
-        @Body() status: TaskStatus
+        @Body() status: UpdateTaskStatusRequest
     ): Response<TaskItem>
 
     @GET("tasks/{id}")
