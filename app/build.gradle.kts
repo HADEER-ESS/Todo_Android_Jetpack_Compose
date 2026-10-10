@@ -73,4 +73,5 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.lifecycle.runtime.ktx.v2110)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.datastore.preferences)
 }
