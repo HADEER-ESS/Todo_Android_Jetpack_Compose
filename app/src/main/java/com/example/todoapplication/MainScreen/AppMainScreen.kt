@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.Component.MainAppTitle
 import com.example.todoapplication.Component.TaskItem
@@ -60,13 +64,18 @@ fun MainScreenContent(
             Button(
                 modifier = Modifier
                     .align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF194FF)),
+                shape = RoundedCornerShape(16.dp), // Added .dp for consistent rounding
                 onClick = {
                     scope.launch {
                         store.clearToken()
                     }
                 }
             ) {
-                Text("LogOut")
+                Text(
+                    text ="Log Out",
+                    color = Color.White
+                )
             }
         }
     }
