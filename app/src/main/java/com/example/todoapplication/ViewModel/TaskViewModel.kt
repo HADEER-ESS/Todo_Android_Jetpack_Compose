@@ -38,7 +38,7 @@ class TaskViewModel(
 
 
     //Create Helper function to update ot add tasks in _userTasks Mutable State Flow
-    fun addToTask(item : TaskState ){
+    fun addToTask(token: String, item : TaskState ){
 
         println("Print $item")
 //        if(item.title == 0){
@@ -56,20 +56,21 @@ class TaskViewModel(
     }
 
     //API <-> connection
-     fun createNewTask(item: CreateTask){
+     fun createNewTask(token: String, item: CreateTask){
         viewModelScope.launch{
             try {
-                val res = repository.createTask(body = item)
+                val res = repository.createTask(token, body = item)
+                println("Task created successfully $res")
             }catch (err: Exception){
                 println("Error in creating task $err",)
             }
         }
     }
 
-    fun updateTaskStatus(id : String , status: TaskStatus){
+    fun updateTaskStatus(token: String, id : String , status: TaskStatus){
         viewModelScope.launch {
             try {
-                val res = repository.updateTaskStatus(id, status)
+                val res = repository.updateTaskStatus(token, id, status)
                 _taskList.value.find{ res.body()?.id == it.id}?.let {
                     it.status = status
                 }
@@ -79,10 +80,10 @@ class TaskViewModel(
         }
     }
 
-    fun getAllTasks(){
+    fun getAllTasks(token: String){
         viewModelScope.launch {
             try {
-                val res = repository.getTasks()
+                val res = repository.getTasks(token)
                 _taskList.value = res.body()!!.toMutableList()
             }catch (err: Exception){
                 println("Error in Getting task List $err")
@@ -90,12 +91,12 @@ class TaskViewModel(
         }
     }
 
-    fun deleteTask(id: String){
+    fun deleteTask(token: String,id: String){
         viewModelScope.launch {
             try {
-                val res = repository.deleteTask(id)
+                val res = repository.deleteTask(token, id)
                 if(res.isSuccessful){
-                    getAllTasks()
+                    getAllTasks(token)
                 }
             }catch (err: Exception){
                 println("Error in Delete task $err")
@@ -103,10 +104,10 @@ class TaskViewModel(
         }
     }
 
-    fun getTaskById(id: String){
+    fun getTaskById(token: String, id: String){
         viewModelScope.launch {
             try {
-                val res = repository.getTaskById(id)
+                val res = repository.getTaskById(token, id)
                 taskViewData = res.body()
 
             }catch (err: Exception){

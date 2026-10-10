@@ -9,30 +9,36 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
     @GET("tasks")
-    suspend fun getTasks() : Response<List<TaskItem>>
+    suspend fun getTasks(@Header("Authorization") token: String) : Response<List<TaskItem>>
 
     @POST("tasks")
-    suspend fun createTask(@Body() body: CreateTask): Response<TaskItem>
+    suspend fun createTask(
+        @Header("Authorization") token: String,
+        @Body() body: CreateTask): Response<TaskItem>
 
     @PATCH("tasks/{id}/status")
     suspend fun updateTaskStatus(
+        @Header("Authorization") token: String,
         @Path("id") id: String,
         @Body() status: TaskStatus
     ): Response<TaskItem>
 
     @GET("tasks/{id}")
     suspend fun getTaskById(
+        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<TaskItem>
 
     @DELETE("tasks/{id}")
     suspend fun deleteTask(
+        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Response<Void>
 
