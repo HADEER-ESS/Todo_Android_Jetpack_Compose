@@ -1,11 +1,16 @@
 package com.example.todoapplication.Component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
@@ -29,29 +34,33 @@ fun TaskItem(
     token: String,
     userTaskViewModel: TaskViewModel
 ) {
-    println("Income Task from model ${task.description}")
     var expandList by remember { mutableStateOf(false) }
-
-    Row(
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 2.dp)
+            .border(2.dp, Color.Gray, RoundedCornerShape(6.dp))
+            .background(Color.White)
+    ) {
+        Text(text = "title ${task.title}", modifier = Modifier.padding(start = 8.dp))
+        Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .background(color = Color.Cyan, shape = RectangleShape)
+            .padding(vertical = 8.dp, horizontal = 2.dp)
             .clickable { expandList = true } // Added clickable to open the menu
     ) {
-        Text(text = task.title)
-        Text(text = task.description)
+        Text(text = task.description, modifier = Modifier.padding(start = 8.dp))
         Text(text = task.status.name) // Show current status
 
         DropdownMenu(
             expanded = expandList,
-            onDismissRequest = { expandList = false }
+            onDismissRequest = { expandList = false },
         ) {
             TaskStatus.entries.forEach { status ->
                 DropdownMenuItem(
-                    text = { Text(status.name) },
+                    text = { Text(status.name, modifier = Modifier.size(12.dp).padding(end = 8.dp)) },
                     onClick = {
                         expandList = false
                         println("update function called")
@@ -61,4 +70,5 @@ fun TaskItem(
             }
         }
     }
+}
 }
