@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,7 +43,21 @@ fun TaskItem(
             .border(2.dp, Color.Gray, RoundedCornerShape(6.dp))
             .background(Color.White)
     ) {
-        Text(text = "title ${task.title}", modifier = Modifier.padding(start = 8.dp))
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(all= 8.dp)
+        ){
+            Text(text = "title ${task.title}")
+            Text(
+                text= "DELETE",
+                color = Color.Red,
+                modifier = Modifier
+                    .clickable(
+                        onClick = { userTaskViewModel.deleteTask(token, task.id) }
+                    )
+            )
+        }
         Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -60,7 +75,9 @@ fun TaskItem(
         ) {
             TaskStatus.entries.forEach { status ->
                 DropdownMenuItem(
-                    text = { Text(status.name, modifier = Modifier.size(12.dp).padding(end = 8.dp)) },
+                    text = { Text(status.name, modifier = Modifier
+                        .size(12.dp)
+                        .padding(end = 8.dp)) },
                     onClick = {
                         expandList = false
                         println("update function called")
