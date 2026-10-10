@@ -31,7 +31,7 @@ import com.example.todoapplication.data.request.CreateUser
 fun LoginScreen(
     userViewModel: UserViewModel = viewModel(factory = UserViewModel.Factory)
 ){
-    var email by rememberSaveable { mutableStateOf("") }
+    var username by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var firstTime by rememberSaveable { mutableStateOf(false) }
     
@@ -53,10 +53,10 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = email,
-            onValueChange = {email = it},
-            label = { Text(text = "Email")},
-            placeholder = { Text(text = "Enter Email")},
+            value = username,
+            onValueChange = {username = it},
+            label = { Text(text = "Username")},
+            placeholder = { Text(text = "Enter username")},
             singleLine = true
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -70,11 +70,11 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(33.dp))
         Button(onClick = {
-            if(email.isNotEmpty() && password.isNotEmpty()){
+            if(username.isNotEmpty() && password.isNotEmpty()){
                 if(firstTime){
-                    userViewModel.createAccount(CreateUser(email, password))
+                    userViewModel.createAccount(CreateUser(username, password))
                 } else {
-                    userViewModel.login(CreateUser(email, password))
+                    userViewModel.login(CreateUser(username, password))
                 }
             } else {
                 Toast.makeText(context, "Please enter email and password", Toast.LENGTH_SHORT).show()
