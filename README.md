@@ -21,12 +21,12 @@ An Android task manager built with **Kotlin** and **Jetpack Compose**. It uses a
 - REST API integration
 - Backend: NestJS + PostgreSQL (Neon), deployed on Suga
 
+
 ## Screenshots
 
-<!-- Add screenshots to a /screenshots folder and link them here -->
 | Sign in | Task list | Add task |
-|---------|-----------|----------|
-| ![](screenshots/signin.png) | ![](screenshots/tasks.png) | ![](screenshots/add.png) |
+|:-------:|:---------:|:--------:|
+| <img src="https://github.com/user-attachments/assets/e4f7ecf0-1927-47c8-8e4e-082fa7a96fba" width="250" alt="Add task screen" /> | <img src="https://github.com/user-attachments/assets/1aa29ca3-a13b-4a17-bad5-44d6be5dc5aa" width="250" alt="Task list screen" /> |  <img src="https://github.com/user-attachments/assets/0bc18ad8-2f7c-4a8e-aa9e-d8e3e5996ab7" width="250" alt="Sign in screen" />|
 
 ## Getting Started
 
